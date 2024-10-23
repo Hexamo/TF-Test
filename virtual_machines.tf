@@ -1,15 +1,14 @@
 resource "proxmox_virtual_environment_vm" "talos_cp_01" {
-  name          = "talos-cp-01"
-  description   = "Managed by Terraform"
-  tags          = ["terraform"]
-  node_name     = "Tycho"
-  boot_order    = ["scsi0"]
-  machine       = "q35"
-  scsi_hardware = "virtio-scsi-single"
-  bios          = "seabios"
-
-
-  on_boot = true
+  name        = "talos-cp-01"
+  description = "Managed by Terraform"
+  tags        = ["terraform"]
+  node_name   = "Tycho"
+  on_boot     = true
+  bios        = "ovmf"
+  boot_order  = ["scsi0"]
+  # machine       = "q35"
+  # scsi_hardware = "virtio-scsi-single"
+  # bios          = "seabios"
 
   cpu {
     cores = 1
@@ -28,10 +27,10 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
   }
 
   disk {
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     file_id      = proxmox_virtual_environment_download_file.talos_nocloud_image.id
     file_format  = "raw"
-    interface    = "scsi0"
+    interface    = "virtio0"
     size         = 20
   }
   operating_system {
@@ -40,7 +39,7 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
 
   initialization {
     interface    = "scsi0"
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     ip_config {
       ipv4 {
         address = "${var.talos_cp_01_ip_addr}/24"
