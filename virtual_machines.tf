@@ -2,7 +2,7 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
   name        = "talos-cp-01"
   description = "Managed by Terraform"
   tags        = ["terraform"]
-  node_name   = "Tycho"
+  node_name   = "Proxmox"
   on_boot     = true
   bios        = "ovmf"
   boot_order  = ["scsi0"]
@@ -54,7 +54,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
   name          = "talos-worker-01"
   description   = "Managed by Terraform"
   tags          = ["terraform"]
-  node_name     = "Tycho"
+  node_name     = "Proxmox"
   on_boot       = true
   boot_order    = ["scsi0"]
   machine       = "q35"
@@ -93,7 +93,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
 
   initialization {
     interface    = "scsi0"
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     ip_config {
       ipv4 {
         address = "${var.talos_worker_01_ip_addr}/24"
