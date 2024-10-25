@@ -8,7 +8,7 @@ locals {
 resource "proxmox_virtual_environment_download_file" "talos_nocloud_image" {
   content_type            = "iso"
   datastore_id            = "local"
-  node_name               = "Tycho"
+  node_name               = "Proxmox"
   file_name               = "talos-${local.talos.version}-nocloud-amd64.img"
   url                     = "https://factory.talos.dev/image/${local.talos.schematic_ID}/${local.talos.version}/metal-amd64.raw.zst"
   decompression_algorithm = "zst"

@@ -1,8 +1,8 @@
 resource "proxmox_virtual_environment_vm" "talos_cp_01" {
-  name          = "talos-cp-01"
+  name          = "talos-cp-01-mads"
   description   = "Managed by Terraform"
   tags          = ["terraform"]
-  node_name     = "Tycho"
+  node_name     = "Proxmox"
   boot_order    = ["scsi0"]
   machine       = "q35"
   scsi_hardware = "virtio-scsi-single"
@@ -28,7 +28,7 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
   }
 
   disk {
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     file_id      = proxmox_virtual_environment_download_file.talos_nocloud_image.id
     file_format  = "raw"
     interface    = "scsi0"
@@ -40,7 +40,7 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
 
   initialization {
     interface    = "scsi0"
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     ip_config {
       ipv4 {
         address = "${var.talos_cp_01_ip_addr}/24"
@@ -52,10 +52,10 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
 
 resource "proxmox_virtual_environment_vm" "talos_worker_01" {
   depends_on    = [proxmox_virtual_environment_vm.talos_cp_01]
-  name          = "talos-worker-01"
+  name          = "talos-worker-01-Mads"
   description   = "Managed by Terraform"
   tags          = ["terraform"]
-  node_name     = "Tycho"
+  node_name     = "Proxmox"
   on_boot       = true
   boot_order    = ["scsi0"]
   machine       = "q35"
@@ -81,7 +81,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
   }
 
   disk {
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     file_id      = proxmox_virtual_environment_download_file.talos_nocloud_image.id
     file_format  = "raw"
     interface    = "scsi0"
@@ -94,7 +94,7 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
 
   initialization {
     interface    = "scsi0"
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     ip_config {
       ipv4 {
         address = "${var.talos_worker_01_ip_addr}/24"
