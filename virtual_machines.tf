@@ -2,20 +2,16 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
   name        = "talos-cp-01"
   description = "Managed by Terraform"
   tags        = ["terraform"]
-  node_name   = "Proxmox"
+  node_name   = "Tycho"
   on_boot     = true
   bios        = "ovmf"
-  boot_order  = ["scsi0"]
-  # machine       = "q35"
-  # scsi_hardware = "virtio-scsi-single"
-  # bios          = "seabios"
 
   cpu {
     cores = 1
     type  = "x86-64-v2-AES"
   }
   memory {
-    dedicated = 1024
+    dedicated = 2048
   }
 
   agent {
@@ -33,12 +29,17 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
     interface    = "virtio0"
     size         = 20
   }
+
+  efi_disk {
+    datastore_id = "local-zfs"
+    type         = "4m"
+  }
+
   operating_system {
     type = "l26" # Linux Kernel 2.6 - 5.X.
   }
 
   initialization {
-    interface    = "scsi0"
     datastore_id = "local-zfs"
     ip_config {
       ipv4 {
@@ -50,25 +51,19 @@ resource "proxmox_virtual_environment_vm" "talos_cp_01" {
 }
 
 resource "proxmox_virtual_environment_vm" "talos_worker_01" {
-  depends_on    = [proxmox_virtual_environment_vm.talos_cp_01]
-  name          = "talos-worker-01"
-  description   = "Managed by Terraform"
-  tags          = ["terraform"]
-  node_name     = "Proxmox"
-  on_boot       = true
-  boot_order    = ["scsi0"]
-  machine       = "q35"
-  scsi_hardware = "virtio-scsi-single"
-  bios          = "seabios"
-
+  name        = "talos-worker-01"
+  description = "Managed by Terraform"
+  tags        = ["terraform"]
+  node_name   = "Tycho"
+  on_boot     = true
+  bios        = "ovmf"
 
   cpu {
     cores = 1
     type  = "x86-64-v2-AES"
   }
-
   memory {
-    dedicated = 1024
+    dedicated = 2048
   }
 
   agent {
@@ -80,11 +75,16 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
   }
 
   disk {
-    datastore_id = "bulk"
+    datastore_id = "local-zfs"
     file_id      = proxmox_virtual_environment_download_file.talos_nocloud_image.id
     file_format  = "raw"
-    interface    = "scsi0"
+    interface    = "virtio0"
     size         = 20
+  }
+
+  efi_disk {
+    datastore_id = "local-zfs"
+    type         = "4m"
   }
 
   operating_system {
@@ -92,7 +92,6 @@ resource "proxmox_virtual_environment_vm" "talos_worker_01" {
   }
 
   initialization {
-    interface    = "scsi0"
     datastore_id = "local-zfs"
     ip_config {
       ipv4 {
